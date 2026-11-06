@@ -213,7 +213,7 @@ class RequestEncodingMixin:
                         (
                             field.decode("utf-8")
                             if isinstance(field, bytes)
-                            else field,
+                            else str(field),
                             v.encode("utf-8") if isinstance(v, str) else v,
                         )
                     )
@@ -232,6 +232,16 @@ class RequestEncodingMixin:
             else:
                 fn = guess_filename(v) or k
                 fp = v
+
+            if isinstance(k, bytes):
+                k = k.decode("utf-8")
+            else:
+                k = str(k)
+
+            if isinstance(fn, bytes):
+                fn = fn.decode("utf-8")
+            elif fn is not None:
+                fn = str(fn)
 
             if isinstance(fp, (str, bytes, bytearray)):
                 fdata = fp

@@ -1899,6 +1899,15 @@ class TestRequests:
 
         assert "multipart/form-data" in p.headers["Content-Type"]
 
+    def test_can_send_non_string_keys_with_files(self):
+        r1 = requests.Request("POST", "http://example.com", data={1: "a"}, files={"f": b"x"})
+        p1 = r1.prepare()
+        assert b'name="1"' in p1.body
+
+        r2 = requests.Request("POST", "http://example.com", files={1: b"x"})
+        p2 = r2.prepare()
+        assert b'name="1"' in p2.body
+
     def test_autoset_header_values_are_native(self, httpbin):
         data = "this is a string"
         length = "16"
