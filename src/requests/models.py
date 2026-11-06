@@ -549,6 +549,10 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
             params = to_native_string(params)
 
         if params is not None:
+            if not isinstance(params, (str, bytes)) and not hasattr(params, "__iter__"):
+                raise TypeError(
+                    f"params must be a dict, a list of tuples, or a str/bytes, not {type(params).__name__}"
+                )
             enc_params = self._encode_params(params)
         else:
             enc_params = ""
